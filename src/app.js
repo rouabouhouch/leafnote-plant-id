@@ -14,13 +14,13 @@ async function profile(name) {
   try {
     const info = await getProfile(name, signal);
     if(signal.aborted) return;
-    section.replaceChildren(el('span','PLANT PROFILE','eyebrow'),el('h4',info.title),el('p',info.description || '', 'micro'),el('p',info.extract),link('Read the Wikipedia article ↗', info.url),el('p','Wikipedia contributors · CC BY-SA. Check the article before using its information.', 'micro'));
+    section.replaceChildren(el('span','PLANT PROFILE','eyebrow'),el('h4',info.title),el('p',info.description || '', 'micro'),el('p',info.extract),link('Read the Wikipedia article', info.url),el('p','Wikipedia contributors · CC BY-SA. Check the article before using its information.', 'micro'));
   } catch {
     if (profileAbort.signal !== signal) return;
     section.replaceChildren(el('h4',name),el('p','A description is unavailable right now. Use the source links to explore this candidate.'));
   } finally {clearTimeout(timer);}
   if(profileAbort.signal !== signal) return;
-  section.append(link('Explore botanical records ↗','https://powo.science.kew.org/results?q='+encodeURIComponent(name)));
+  section.append(link('Explore botanical records','https://powo.science.kew.org/results?q='+encodeURIComponent(name)));
 }
 function render(matches) {
   $('empty').hidden = true; $('results').hidden = false; $('candidates').replaceChildren();
@@ -56,6 +56,8 @@ async function identify(file, source) {
     if(bitmap.width*bitmap.height>40e6)throw new Error('Please resize the photo to under 40 megapixels.');
     const canvas=document.createElement('canvas');canvas.width=canvas.height=SIZE;
     const context=canvas.getContext('2d',{willReadFrequently:true});
+    context.imageSmoothingEnabled=true;
+    context.imageSmoothingQuality='high';
     context.fillStyle='#fff';context.fillRect(0,0,SIZE,SIZE);
     context.drawImage(bitmap,...centerCrop(bitmap.width,bitmap.height),0,0,SIZE,SIZE);
     const pixels=normalize(context.getImageData(0,0,SIZE,SIZE).data);
@@ -63,7 +65,7 @@ async function identify(file, source) {
     $('preview').src=objectURL;$('preview-wrap').hidden=false;$('dropzone').classList.add('compact');
     $('filename').textContent=file.name || 'Plant photo';
     $('photo-credit').replaceChildren();
-    if(source)$('photo-credit').append(link('Photo by '+source.observer+' · CC0 · expected '+source.name+' ↗',source.source));
+    if(source)$('photo-credit').append(link('Photo by '+source.observer+' · CC0 · expected '+source.name+'',source.source));
     ensureWorker().postMessage({id,pixels},[pixels.buffer]);
   }catch(error){if(id===request)status(error.message || 'We could not open this image. Try a different photo.',true);}
   finally{bitmap?.close();}

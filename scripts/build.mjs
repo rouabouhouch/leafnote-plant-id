@@ -9,7 +9,7 @@ const files=[
  ['vendor/ort-wasm-simd-threaded.wasm','https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort-wasm-simd-threaded.wasm','207d02be4591c156b0a98f024f3d58005b5b04c92274d759fb390338c63559ea']
 ];
 await rm('dist',{recursive:true,force:true});await mkdir('dist/vendor',{recursive:true});
-for(const path of ['index.html','style.css','src','samples','assets'])await cp(path,'dist/'+path,{recursive:true,filter:p=>!p.endsWith('.onnx')});
+for(const path of ['index.html','style.css','src','samples','assets','LICENSE','ONNX-RUNTIME-LICENSE.txt'])await cp(path,'dist/'+path,{recursive:true,filter:p=>!p.endsWith('.onnx')});
 for(const [path,url,hash] of files){
  let bytes;try{bytes=await readFile(path);}catch{}
  if(!bytes||createHash('sha256').update(bytes).digest('hex')!==hash){execFileSync('curl',['--fail','--location','--retry','3','--max-time','180',url,'--output','dist/'+path],{stdio:'inherit'});bytes=await readFile('dist/'+path);}

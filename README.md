@@ -23,7 +23,7 @@ This is an exploratory field guide, not a definitive identifier. Plants outside 
 - Model author [cpoisson](https://huggingface.co/cpoisson/plantnet300k-mobilenetv3-small), PlantNet-300K MobileNetV3 Small.
 - Pinned revision `b7505ed8cf49fea221c2bb0eae83239f066f32bb`, file `plantnet_mobilenetv3.onnx`.
 - The available ONNX is the v1 export. The author's model card reports v1 top-1 accuracy of 73.89% and top-5 of 91.86% on their test split. Those are author-reported dataset metrics, not measured accuracy of this app, and not the higher v2 PyTorch results.
-- Preprocessing approximates resize-short-side 256 followed by centre crop 224 in a single browser canvas resample, converts RGB to float32 NCHW, and applies ImageNet means and standard deviations. Interpolation can differ from the original torchvision pipeline and the Node spot-check pipeline.
+- Preprocessing approximates resize-short-side 256 followed by centre crop 224 in a high-quality browser canvas resample, converts RGB to float32 NCHW, and applies ImageNet means and standard deviations. Interpolation can differ from the original torchvision pipeline and the Node spot-check pipeline.
 - Labels follow the sorted seven-digit species IDs used by ImageFolder. The species count is validated at runtime.
 - ONNX Runtime Web is pinned to 1.20.1. Both runtime and model downloads are SHA-256 verified during build. All inference assets are then served from the app's own origin.
 
@@ -38,7 +38,7 @@ Four CC0 iNaturalist research-grade observation photos were checked with the shi
 | Nymphaea alba | Nymphaea alba | 88.2% | 1 |
 | Papaver rhoeas | Papaver rhoeas | 98.6% | 1 |
 
-The thistle failure is deliberately retained in the app. A high score alone is not a reliability guarantee. Browser results may differ slightly because of image resampling. Photo observers, original observations and source URLs are recorded in [samples/index.json](samples/index.json).
+The thistle failure is deliberately retained in the app. A high score alone is not a reliability guarantee. Browser results can differ because of image resampling. Photo observers, original observations and source URLs are recorded in [samples/index.json](samples/index.json).
 
 ## Run and deploy
 
