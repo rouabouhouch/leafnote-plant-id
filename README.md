@@ -25,7 +25,7 @@ This is an exploratory field guide, not a definitive identifier. Plants outside 
 - The available ONNX is the v1 export. The author's model card reports v1 top-1 accuracy of 73.89% and top-5 of 91.86% on their test split. Those are author-reported dataset metrics, not measured accuracy of this app, and not the higher v2 PyTorch results.
 - Preprocessing approximates resize-short-side 256 followed by centre crop 224 in a high-quality browser canvas resample, converts RGB to float32 NCHW, and applies ImageNet means and standard deviations. Interpolation can differ from the original torchvision pipeline and the Node spot-check pipeline.
 - Labels follow the sorted seven-digit species IDs used by ImageFolder. The species count is validated at runtime.
-- ONNX Runtime Web is pinned to 1.20.1. Both runtime and model downloads are SHA-256 verified during build. All inference assets are then served from the app's own origin.
+- ONNX Runtime Web is pinned to 1.20.1. Both runtime and model downloads are SHA-256 verified during build. All inference assets are then served from the app's own origin. Application modules, styles and profile data use source-derived filenames to prevent stale browser caches mixing deployments.
 
 ## Real-photo spot check
 

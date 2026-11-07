@@ -1,9 +1,60 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
-import {centerCrop,normalize,classNames,rank,searchName} from '../src/classifier.js';
-test('portrait and landscape follow resize 256 then center crop 224 geometry',()=>{assert.deepEqual(centerCrop(400,800),[25,225,350,350]);assert.deepEqual(centerCrop(800,400),[225,25,350,350]);assert.throws(()=>centerCrop(0,400));});
-test('RGB is normalized to channel-first without mixing alpha',()=>{const rgba=new Uint8ClampedArray(224*224*4);rgba[0]=255;rgba[1]=128;rgba[2]=0;rgba[3]=17;const out=normalize(rgba);assert.ok(Math.abs(out[0]-(1-.485)/.229)<1e-6);assert.ok(Math.abs(out[224*224]-(128/255-.456)/.224)<1e-6);assert.ok(Math.abs(out[224*224*2]-(-.406/.225))<1e-6);assert.throws(()=>normalize([1,2,3]));});
-test('softmax stays stable for extreme logits and ranks all classes before truncating',()=>{const results=rank(new Float32Array([1000,1003,1002,1001]),['a','b','c','d']);assert.deepEqual(results.map(x=>x.name),['b','c','d']);assert.ok(results[0].score>.64&&results[0].score<.65);assert.throws(()=>rank([NaN],['a']));assert.throws(()=>rank([1],['a','b']));});
-test('shipped taxonomy has the trained class count and ImageFolder order',()=>{const mapping=JSON.parse(readFileSync(new URL('../assets/species.json',import.meta.url)));const labels=classNames(mapping);assert.equal(labels.length,1081);assert.equal(labels[0],mapping[Object.keys(mapping).sort()[0]]);assert.ok(labels.includes('Papaver rhoeas L.'));assert.throws(()=>classNames({'1':'wrong'}));});
-test('profile searches remove botanical authorities while preserving hybrid names',()=>{assert.equal(searchName('Cirsium vulgare (Savi) Ten.'),'Cirsium vulgare');assert.equal(searchName('Mentha × piperita L.'),'Mentha × piperita');});
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import {
+  centerCrop,
+  normalize,
+  classNames,
+  rank,
+  searchName,
+} from "../src/classifier.js";
+test("portrait and landscape follow resize 256 then center crop 224 geometry", () => {
+  assert.deepEqual(centerCrop(400, 800), [25, 225, 350, 350]);
+  assert.deepEqual(centerCrop(800, 400), [225, 25, 350, 350]);
+  assert.throws(() => centerCrop(0, 400));
+});
+test("RGB is normalized to channel-first without mixing alpha", () => {
+  const rgba = new Uint8ClampedArray(224 * 224 * 4);
+  rgba[0] = 255;
+  rgba[1] = 128;
+  rgba[2] = 0;
+  rgba[3] = 17;
+  const out = normalize(rgba);
+  assert.ok(Math.abs(out[0] - (1 - 0.485) / 0.229) < 1e-6);
+  assert.ok(Math.abs(out[224 * 224] - (128 / 255 - 0.456) / 0.224) < 1e-6);
+  assert.ok(Math.abs(out[224 * 224 * 2] - -0.406 / 0.225) < 1e-6);
+  assert.throws(() => normalize([1, 2, 3]));
+});
+test("softmax stays stable for extreme logits and ranks all classes before truncating", () => {
+  const results = rank(new Float32Array([1000, 1003, 1002, 1001]), [
+    "a",
+    "b",
+    "c",
+    "d",
+  ]);
+  assert.deepEqual(
+    results.map((x) => x.name),
+    ["b", "c", "d"],
+  );
+  assert.ok(results[0].score > 0.64 && results[0].score < 0.65);
+  assert.throws(() => rank([NaN], ["a"]));
+  assert.throws(() => rank([1], ["a", "b"]));
+});
+test("shipped taxonomy has the trained class count and ImageFolder order", () => {
+  const mapping = JSON.parse(
+    readFileSync(new URL("../assets/species.json", import.meta.url)),
+  );
+  const labels = classNames(mapping);
+  assert.equal(labels.length, 1081);
+  assert.equal(labels[0], mapping[Object.keys(mapping).sort()[0]]);
+  assert.ok(labels.includes("Papaver rhoeas L."));
+  assert.throws(() => classNames({ 1: "wrong" }));
+});
+test("profile searches remove botanical authorities while preserving hybrid names", () => {
+  assert.equal(searchName("Cirsium vulgare (Savi) Ten."), "Cirsium vulgare");
+  assert.equal(searchName("Mentha × piperita L."), "Mentha × piperita");
+  assert.equal(
+    searchName("Lavandula x intermedia Emeric ex Loisel."),
+    "Lavandula × intermedia",
+  );
+});
