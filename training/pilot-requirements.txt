@@ -1,0 +1,6 @@
+# Install torch and torchvision from the official CPU wheel index when no GPU is available.
+torch==2.5.1
+torchvision==0.20.1
+numpy==2.3.5
+Pillow==13.0.0
+scipy==1.17.0
