@@ -40,6 +40,8 @@ Four CC0 iNaturalist research-grade observation photos were checked with the shi
 
 The thistle failure is deliberately retained in the app. A high score alone is not a reliability guarantee. Browser results can differ because of image resampling. Photo observers, original observations and source URLs are recorded in [samples/index.json](samples/index.json).
 
+See [live browser validation](docs/validation.md) for the final deployed results.
+
 ## Run and deploy
 
 Requires Node.js 22, curl and Python 3 for the optional local server. No npm package installation is needed.
